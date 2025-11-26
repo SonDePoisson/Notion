@@ -19,63 +19,30 @@ Ce script automatise deux tâches principales :
 ## Installation
 
 1. Clonez ce dépôt :
+
 ```bash
 git clone https://github.com/votre-username/Notion.git
 cd Notion
 ```
 
 2. Installez les dépendances :
+
 ```bash
 pip install notion-client python-dotenv python-dateutil
 ```
 
 3. Créez un fichier `.env` à partir du template :
+
 ```bash
 cp .env.example .env
 ```
 
 4. Éditez le fichier `.env` avec vos informations :
+
 ```
 NOTION_API_KEY=votre_clé_api_notion
 DATABASE_ID=id_de_votre_base_de_données
 ```
-
-## Configuration de la base de données Notion
-
-Votre base de données Notion doit contenir les propriétés suivantes :
-
-- **Entreprise** (Titre) : Nom de l'entreprise
-- **Statut** (Statut) : Statut de la candidature (Envoyée, À relancer, Entretien passé, etc.)
-- **Date de candidature** (Date) : Date d'envoi de la candidature
-- **Date d'entretien** (Date) : Date de l'entretien (optionnel)
-
-## Utilisation
-
-Exécutez le script :
-```bash
-python update_candidature.py
-```
-
-Le script affichera :
-- Les candidatures trouvées
-- Les mises à jour effectuées
-- Un résumé des modifications
-
-## Automatisation
-
-Pour exécuter ce script automatiquement, vous pouvez utiliser :
-
-### Cron (Linux/macOS)
-```bash
-# Éditer le crontab
-crontab -e
-
-# Ajouter cette ligne pour exécuter tous les jours à 9h
-0 9 * * * /usr/bin/python3 /chemin/vers/update_candidature.py
-```
-
-### Task Scheduler (Windows)
-Créez une tâche planifiée qui exécute le script quotidiennement.
 
 ## Structure du projet
 
@@ -87,7 +54,3 @@ Créez une tâche planifiée qui exécute le script quotidiennement.
 ├── .gitignore              # Fichiers à ignorer par Git
 └── README.md               # Ce fichier
 ```
-
-## Licence
-
-MIT
