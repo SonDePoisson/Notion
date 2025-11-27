@@ -12,12 +12,10 @@ from mcp.server.stdio import stdio_server
 from mcp.types import Tool, TextContent
 
 try:
-    from .tools.scraper import scrape_sites_theses
     from .tools.analyzer import analyser_offre
     from .tools.notion_client import creer_candidature_notion
 except ImportError:
     # Fallback pour import direct
-    from tools.scraper import scrape_sites_theses
     from tools.analyzer import analyser_offre
     from tools.notion_client import creer_candidature_notion
 
@@ -50,24 +48,8 @@ async def list_tools() -> list[Tool]:
         ),
         Tool(
             name="lire_sites_surveilles",
-            description="Lit la liste des sites à surveiller pour les offres de thèse",
+            description="Lit la liste des sites à surveiller pour les offres de thèse. Claude devra ensuite faire des recherches web pour trouver les offres pertinentes.",
             inputSchema={"type": "object", "properties": {}, "required": []},
-        ),
-        Tool(
-            name="scrape_sites_theses",
-            description="Parcourt une liste de sites web pour extraire les offres de thèse",
-            inputSchema={
-                "type": "object",
-                "properties": {
-                    "urls": {"type": "array", "items": {"type": "string"}, "description": "Liste des URLs à scraper"},
-                    "depuis_jours": {
-                        "type": "integer",
-                        "description": "Nombre de jours à remonter dans l'historique (défaut: 7)",
-                        "default": 7,
-                    },
-                },
-                "required": ["urls"],
-            },
         ),
         Tool(
             name="analyser_offre",
@@ -110,20 +92,6 @@ async def call_tool(name: str, arguments: dict[str, Any]) -> list[TextContent]:
     elif name == "lire_sites_surveilles":
         sites = load_config(SITES_PATH)
         return [TextContent(type="text", text=yaml.dump(sites, allow_unicode=True, default_flow_style=False))]
-
-    elif name == "scrape_sites_theses":
-        urls = arguments["urls"]
-        depuis_jours = arguments.get("depuis_jours", 7)
-
-        offres = await scrape_sites_theses(urls, depuis_jours)
-
-        return [
-            TextContent(
-                type="text",
-                text=f"✅ {len(offres)} offre(s) trouvée(s)\n\n"
-                + yaml.dump(offres, allow_unicode=True, default_flow_style=False),
-            )
-        ]
 
     elif name == "analyser_offre":
         offre = arguments["offre"]

@@ -15,15 +15,14 @@ Script Python qui s'exécute automatiquement tous les jours à 8h30 pour :
 
 Serveur MCP (Model Context Protocol) qui permet à Claude de :
 
-- **Scraper automatiquement** des sites de laboratoires et portails pour trouver des offres de thèse
+- **Rechercher automatiquement** des offres de thèse via des recherches web
 - **Analyser la correspondance** entre les offres et votre profil de candidat (score 0-100)
 - **Créer automatiquement** des entrées dans votre base Notion pour les offres pertinentes
 
 #### Outils MCP disponibles
 
 - `lire_profil` : Charge votre profil candidat
-- `lire_sites_surveilles` : Liste les sites à surveiller
-- `scrape_sites_theses` : Scrape les sites pour trouver des offres
+- `lire_sites_surveilles` : Liste les sites à surveiller (Claude fera ensuite des recherches web)
 - `analyser_offre` : Analyse une offre par rapport à votre profil
 - `creer_candidature_notion` : Crée une entrée Notion
 
@@ -172,13 +171,14 @@ Redémarrez Claude Desktop.
 Claude va automatiquement :
 
 1. Charger votre profil
-2. Scraper tous les sites configurés
-3. Analyser chaque offre trouvée
-4. Créer des entrées Notion pour les offres pertinentes (score ≥ 60)
+2. Lire les sites à surveiller
+3. Faire des recherches web pour trouver des offres
+4. Analyser chaque offre trouvée
+5. Créer des entrées Notion pour les offres pertinentes (score ≥ 60)
 
 **Autres commandes :**
 
-> "Montre-moi les nouvelles offres de thèse de la semaine sans les ajouter à Notion"
+> "Recherche des offres de thèse pour moi sur [thématique]"
 
 > "Analyse cette offre pour moi : [URL]"
 
@@ -200,32 +200,16 @@ Le MCP calcule un score (0-100) basé sur :
 - Score ≥ 60 : ✅ Pertinent (ajouté à Notion)
 - Score < 60 : ⚠️ Non ajouté
 
-## Tests
-
-Pour tester le MCP :
-
-```bash
-python test_mcp.py
-```
-
-Ce script vérifie :
-
-- Chargement des configurations
-- Analyseur de correspondance
-- Système de cache
-- Serveur MCP
-
 ## Structure du projet
 
 ```
 .
-├── src/                         # Code source du MCP
-│   ├── server.py               # Serveur MCP principal
-│   ├── tools/
-│   │   ├── scraper.py          # Scraping des offres
-│   │   ├── analyzer.py         # Analyse de correspondance
-│   │   └── notion_client.py    # Intégration Notion
-│   └── utils/
+├── src/                         # Code source
+│   ├── mcp_server.py           # Serveur MCP principal
+│   ├── update_candidature.py   # Script d'automatisation quotidienne
+│   └── tools/
+│       ├── analyzer.py         # Analyse de correspondance
+│       └── notion_client.py    # Intégration Notion
 ├── config/                      # Configuration du MCP
 │   ├── profil.yaml             # Votre profil (ignoré par git)
 │   ├── sites.yaml              # Sites à surveiller (ignoré par git)
@@ -233,11 +217,7 @@ Ce script vérifie :
 │   ├── profil.example.yaml     # Template de profil
 │   ├── sites.example.yaml      # Template de sites
 │   └── settings.example.yaml   # Template de paramètres
-├── data/
-│   └── offres_vues.json        # Cache des offres (ignoré par git)
-├── update_candidature.py       # Script d'automatisation quotidienne
 ├── run_notion_automation.sh    # Script wrapper pour launchd
-├── test_mcp.py                 # Script de test du MCP
 ├── requirements.txt            # Dépendances Python
 ├── .env                        # Variables d'environnement (ignoré par git)
 ├── .env.example                # Template de variables
@@ -266,12 +246,6 @@ Ce script vérifie :
 - Vérifiez que Python 3.10+ est installé
 - Vérifiez que toutes les dépendances sont installées : `pip install -r requirements.txt`
 - Vérifiez que les fichiers de config existent (profil.yaml, sites.yaml, settings.yaml)
-
-**Aucune offre trouvée :**
-
-- Certains sites peuvent avoir changé de structure HTML
-- Augmentez `depuis_jours` dans l'appel à `scrape_sites_theses`
-- Vérifiez que les URLs dans `sites.yaml` sont valides
 
 **Erreur Notion :**
 
