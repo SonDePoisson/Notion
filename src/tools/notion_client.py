@@ -5,12 +5,7 @@ from typing import Any
 from notion_client import Client
 
 
-async def creer_candidature_notion(
-    offre: dict,
-    analyse: dict,
-    settings: dict,
-    notion_api_key: str
-) -> dict[str, Any]:
+async def creer_candidature_notion(offre: dict, analyse: dict, settings: dict, notion_api_key: str) -> dict[str, Any]:
     """
     Crée une entrée dans la base Notion pour une offre de thèse.
 
@@ -42,20 +37,8 @@ async def creer_candidature_notion(
 
         # Préparer les propriétés
         properties = {
-            "Entreprise": {
-                "title": [
-                    {
-                        "text": {
-                            "content": offre.get("labo", "Laboratoire non spécifié")
-                        }
-                    }
-                ]
-            },
-            "Statut": {
-                "status": {
-                    "name": settings["notion"]["statut_nouveau"]
-                }
-            },
+            "Entreprise": {"title": [{"text": {"content": offre.get("labo", "Laboratoire non spécifié")}}]},
+            "Statut": {"status": {"name": settings["notion"]["statut_nouveau"]}},
             "Note": {
                 "rich_text": [
                     {
@@ -64,57 +47,29 @@ async def creer_candidature_notion(
                         }
                     }
                 ]
-            }
+            },
         }
 
         # Ajouter le type si le champ existe
         if "Type" in properties:
-            properties["Type"] = {
-                "select": {
-                    "name": settings["notion"]["type_these"]
-                }
-            }
+            properties["Type"] = {"select": {"name": settings["notion"]["type_these"]}}
 
-        # Ajouter le titre de la thèse dans "Poste 1" si le champ existe
+        # Ajouter le titre de la thèse dans "Poste" si le champ existe
         if offre.get("titre"):
-            properties["Poste 1"] = {
-                "rich_text": [
-                    {
-                        "text": {
-                            "content": offre["titre"][:2000]
-                        }
-                    }
-                ]
-            }
+            properties["Poste"] = {"rich_text": [{"text": {"content": offre["titre"][:2000]}}]}
 
         # Ajouter l'URL si disponible
         if offre.get("url"):
-            properties["Lien de l'offre"] = {
-                "url": offre["url"]
-            }
+            properties["Lien de l'offre"] = {"url": offre["url"]}
 
         # Ajouter la ville si disponible et si le champ existe
         if offre.get("lieu"):
-            properties["Ville"] = {
-                "select": {
-                    "name": offre["lieu"]
-                }
-            }
+            properties["Ville"] = {"select": {"name": offre["lieu"]}}
 
         # Créer la page dans Notion
-        response = notion.pages.create(
-            parent={"database_id": database_id},
-            properties=properties
-        )
+        response = notion.pages.create(parent={"database_id": database_id}, properties=properties)
 
-        return {
-            "success": True,
-            "notion_url": response["url"],
-            "page_id": response["id"]
-        }
+        return {"success": True, "notion_url": response["url"], "page_id": response["id"]}
 
     except Exception as e:
-        return {
-            "success": False,
-            "error": str(e)
-        }
+        return {"success": False, "error": str(e)}

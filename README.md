@@ -90,7 +90,7 @@ Votre base de données Notion doit contenir les propriétés suivantes :
 - **Date de candidature** (Date) : Date d'envoi de la candidature
 - **Date d'entretien** (Date) : Date de l'entretien (optionnel)
 - **Type** (Select) : Type de poste (Thèse, Stage, CDI, etc.)
-- **Poste 1** (Text) : Titre du poste
+- **Poste** (Text) : Titre du poste
 - **Ville** (Select) : Ville
 - **Lien de l'offre** (URL) : URL de l'offre
 - **Note** (Text) : Notes et analyse
