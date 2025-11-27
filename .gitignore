@@ -39,3 +39,11 @@ env/
 # OS
 .DS_Store
 Thumbs.db
+
+# Data cache
+data/offres_vues.json
+
+# Configuration files (contain personal data)
+config/profil.yaml
+config/sites.yaml
+config/settings.yaml

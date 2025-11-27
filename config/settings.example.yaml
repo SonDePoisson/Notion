@@ -1,0 +1,19 @@
+# Paramètres généraux du MCP
+# COPIEZ CE FICHIER EN settings.yaml ET PERSONNALISEZ-LE
+
+matching:
+  seuil_suggestion: 60  # Score minimum pour suggérer une offre (0-100)
+  seuil_haute_priorite: 80  # Score pour marquer comme haute priorité
+
+scraping:
+  timeout: 30  # Timeout en secondes par requête
+  delai_entre_requetes: 2  # Délai en secondes entre chaque site
+  user_agent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
+
+notion:
+  database_id: "votre_database_id_ici"  # ID de votre base Notion
+  statut_nouveau: "À évaluer"
+  type_these: "Thèse"
+
+cache:
+  duree_retention_jours: 90  # Durée de rétention des offres vues dans le cache

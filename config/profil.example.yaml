@@ -1,0 +1,82 @@
+# Profil du candidat pour le matching des offres de thèse
+# COPIEZ CE FICHIER EN profil.yaml ET PERSONNALISEZ-LE
+
+identite:
+  nom: "Votre Nom"
+  email: "votre.email@exemple.fr"
+
+formation:
+  diplome: "Votre diplôme"
+  ecole: "Votre école"
+  annee: 2025
+
+competences_techniques:
+  langages:
+    - Python
+    - C
+    - Java
+  frameworks:
+    - React
+    - Django
+  ia_ml:
+    - TensorFlow
+    - PyTorch
+  autres:
+    - Docker
+    - Git
+
+domaines_interet:
+  principaux:
+    - Intelligence artificielle
+    - Robotique
+    - Vision par ordinateur
+  secondaires:
+    - Machine learning
+    - Deep learning
+
+experience:
+  - entreprise: "Nom de l'entreprise"
+    duree: "X ans"
+    domaine: "Domaine"
+    description: "Description de votre expérience"
+
+criteres_these:
+  localisation:
+    preferences:
+      - Paris
+      - Lyon
+      - Toulouse
+    acceptables:
+      - Bordeaux
+      - Grenoble
+    exclues: []
+
+  date_debut:
+    ideal: "2025-09"
+    au_plus_tard: "2026-01"
+
+  financement:
+    accepte:
+      - Contrat doctoral
+      - CIFRE
+      - Bourse région
+    refuse: []
+
+  langue:
+    - Français
+    - Anglais
+
+mots_cles_positifs:
+  - intelligence artificielle
+  - machine learning
+  - deep learning
+  - robotique
+  - vision
+  - IA
+  - neural networks
+
+mots_cles_negatifs:
+  - chimie
+  - biologie
+  - économie
+  - finance

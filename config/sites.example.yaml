@@ -1,0 +1,28 @@
+# Liste des sites à surveiller pour les offres de thèse
+# COPIEZ CE FICHIER EN sites.yaml ET PERSONNALISEZ-LE
+
+portails_nationaux:
+  - nom: "ABG - L'intelli'agence"
+    url: "https://www.abg.asso.fr/fr/candidatOffres/show/type/these"
+    type: "portail"
+    frequence_maj: "quotidienne"
+
+  - nom: "SFRI"
+    url: "https://www.sfri.fr/offres-de-these/"
+    type: "portail"
+    frequence_maj: "quotidienne"
+
+laboratoires:
+  # Exemple de laboratoire - ajoutez les vôtres
+  - nom: "Nom du laboratoire"
+    url: "https://www.exemple-labo.fr/offres"
+    ville: "Ville"
+    domaines:
+      - Domaine 1
+      - Domaine 2
+
+ecoles_doctorales:
+  # Exemple d'école doctorale - ajoutez les vôtres
+  - nom: "Nom de l'école doctorale"
+    url: "https://www.exemple-ed.fr/theses"
+    ville: "Ville"

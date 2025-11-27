@@ -24,7 +24,7 @@ fi
 conda activate notion
 
 # Exécuter le script Python
-python "$SCRIPT_DIR/update_candidature.py"
+python "$SCRIPT_DIR/src/update_candidature.py"
 
 # Capturer le code de sortie
 EXIT_CODE=$?
