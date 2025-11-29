@@ -14,10 +14,12 @@ from mcp.types import Tool, TextContent
 try:
     from .tools.analyzer import analyser_offre
     from .tools.notion_client import creer_candidature_notion
+    from .tools.profile_extractor import extract_minimal_profile, add_cache_metadata
 except ImportError:
     # Fallback pour import direct
     from tools.analyzer import analyser_offre
     from tools.notion_client import creer_candidature_notion
+    from tools.profile_extractor import extract_minimal_profile, add_cache_metadata
 
 
 # Chemins de configuration
@@ -43,12 +45,23 @@ async def list_tools() -> list[Tool]:
     return [
         Tool(
             name="lire_profil",
-            description="Lit le profil du candidat depuis le fichier de configuration",
+            description="""Lit le profil du candidat depuis le fichier de configuration.
+
+OPTIMISATION: Ce profil est optimisé pour réduire la consommation de tokens.
+Il contient uniquement les champs nécessaires au matching (mots-clés, domaines, localisation, compétences).
+Vous pouvez CACHER ce profil dans votre contexte et le réutiliser pour tous les appels suivants
+sans avoir à rappeler cet outil. Passez-le directement à 'analyser_offre' quand vous l'appelez.""",
             inputSchema={"type": "object", "properties": {}, "required": []},
         ),
         Tool(
             name="lire_sites_surveilles",
-            description="Lit la liste des sites à surveiller pour les offres de thèse. Claude devra ensuite faire des recherches web pour trouver les offres pertinentes.",
+            description="""Lit la liste des sites à surveiller pour les offres de thèse. Claude devra ensuite faire des recherches web pour trouver les offres pertinentes.
+
+IMPORTANT - VALIDATION DES DATES DE CANDIDATURE:
+Lors de la recherche web, vous DEVEZ vérifier la date limite de candidature pour chaque offre trouvée.
+- Si une date limite de candidature est mentionnée ET qu'elle est passée: NE PAS analyser cette offre, NE PAS la proposer.
+- Si aucune date limite de candidature n'est mentionnée: considérer l'offre comme valide et continuer l'analyse normalement.
+La date du jour est automatiquement disponible dans votre contexte pour faire cette vérification.""",
             inputSchema={"type": "object", "properties": {}, "required": []},
         ),
         Tool(
@@ -86,8 +99,10 @@ async def call_tool(name: str, arguments: dict[str, Any]) -> list[TextContent]:
     """Appelle un outil selon son nom."""
 
     if name == "lire_profil":
-        profil = load_config(PROFIL_PATH)
-        return [TextContent(type="text", text=yaml.dump(profil, allow_unicode=True, default_flow_style=False))]
+        profil_complet = load_config(PROFIL_PATH)
+        profil_minimal = extract_minimal_profile(profil_complet)
+        message_avec_metadata = add_cache_metadata(profil_minimal)
+        return [TextContent(type="text", text=message_avec_metadata)]
 
     elif name == "lire_sites_surveilles":
         sites = load_config(SITES_PATH)

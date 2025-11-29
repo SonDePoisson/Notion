@@ -50,8 +50,14 @@ def analyser_offre(offre: dict, profil: dict, settings: dict) -> dict[str, Any]:
 
     # 3. Analyse de la localisation
     lieu = offre.get("lieu", "").lower()
-    criteres_these = profil.get("criteres_these", {})
-    localisation = criteres_these.get("localisation", {})
+
+    # Support pour profil minimal (localisation directement dans profil)
+    # ou profil complet (localisation dans criteres_these)
+    if "localisation" in profil:
+        localisation = profil["localisation"]
+    else:
+        criteres_these = profil.get("criteres_these", {})
+        localisation = criteres_these.get("localisation", {})
 
     preferences = [v.lower() for v in localisation.get("preferences", [])]
     acceptables = [v.lower() for v in localisation.get("acceptables", [])]
@@ -67,12 +73,16 @@ def analyser_offre(offre: dict, profil: dict, settings: dict) -> dict[str, Any]:
         points_faibles.append(f"Localisation non prioritaire: {offre.get('lieu', 'Non spécifié')}")
 
     # 4. Bonus pour les compétences techniques
-    competences = profil.get("competences_techniques", {})
-    toutes_competences = []
-
-    for categorie, items in competences.items():
-        if isinstance(items, list):
-            toutes_competences.extend([c.lower() for c in items])
+    # Support pour profil minimal (competences en liste aplatie)
+    # ou profil complet (competences_techniques en dict)
+    if "competences" in profil and isinstance(profil["competences"], list):
+        toutes_competences = [c.lower() for c in profil["competences"]]
+    else:
+        competences = profil.get("competences_techniques", {})
+        toutes_competences = []
+        for categorie, items in competences.items():
+            if isinstance(items, list):
+                toutes_competences.extend([c.lower() for c in items])
 
     competences_trouvees = [comp for comp in toutes_competences if comp in texte_offre]
 
