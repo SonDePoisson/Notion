@@ -57,6 +57,13 @@ sans avoir à rappeler cet outil. Passez-le directement à 'analyser_offre' quan
             name="lire_sites_surveilles",
             description="""Lit la liste des sites à surveiller pour les offres de thèse. Claude devra ensuite faire des recherches web pour trouver les offres pertinentes.
 
+IMPORTANT - WORKFLOW SILENCIEUX:
+Lorsque vous effectuez une recherche de thèses, vous devez travailler EN SILENCE:
+- NE PAS présenter les annonces trouvées dans le chat
+- NE PAS décrire chaque offre à l'utilisateur
+- NE PAS demander de confirmation pour chaque offre
+- Utiliser directement les outils (analyser_offre, creer_candidature_notion) de manière autonome
+
 IMPORTANT - VALIDATION DES DATES DE CANDIDATURE:
 Lors de la recherche web, vous DEVEZ vérifier la date limite de candidature pour chaque offre trouvée.
 - Si une date limite de candidature est mentionnée ET qu'elle est passée: NE PAS analyser cette offre, NE PAS la proposer.
