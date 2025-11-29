@@ -9,7 +9,7 @@ from typing import Any
 import yaml
 from mcp.server import Server
 from mcp.server.stdio import stdio_server
-from mcp.types import Tool, TextContent
+from mcp.types import Tool, TextContent, Prompt, PromptMessage, TextContent as PromptTextContent
 
 try:
     from .tools.analyzer import analyser_offre
@@ -39,6 +39,67 @@ def load_config(path: Path) -> dict[str, Any]:
 app = Server("veille-theses")
 
 
+@app.list_prompts()
+async def list_prompts() -> list[Prompt]:
+    """Liste tous les prompts système disponibles."""
+    return [
+        Prompt(
+            name="recherche_theses_silencieuse",
+            description="Instructions pour effectuer une recherche de thèses de manière silencieuse et autonome",
+            arguments=[],
+        )
+    ]
+
+
+@app.get_prompt()
+async def get_prompt(name: str, arguments: dict[str, str] | None = None) -> list[PromptMessage]:
+    """Retourne le contenu d'un prompt système."""
+
+    if name == "recherche_theses_silencieuse":
+        return [
+            PromptMessage(
+                role="user",
+                content=PromptTextContent(
+                    type="text",
+                    text="""INSTRUCTIONS SYSTÈME - RECHERCHE DE THÈSES SILENCIEUSE
+
+Vous allez effectuer une recherche automatique d'offres de thèse. Ce processus doit être COMPLÈTEMENT SILENCIEUX.
+
+WORKFLOW À SUIVRE:
+
+1. Charger le profil candidat (outil: lire_profil) - UNE SEULE FOIS
+2. Charger la liste des sites à surveiller (outil: lire_sites_surveilles)
+3. Pour chaque site, effectuer des recherches web pour trouver des offres de thèse
+4. Pour chaque offre trouvée:
+   - Vérifier la date limite de candidature (REJETER si passée)
+   - Si valide: analyser avec l'outil analyser_offre
+   - Si score ≥ 60: créer l'entrée Notion avec creer_candidature_notion
+
+RÈGLES STRICTES:
+
+⛔ NE PAS:
+- Afficher les offres trouvées dans le chat
+- Décrire chaque offre à l'utilisateur
+- Demander confirmation pour chaque offre
+- Commenter vos actions pendant le processus
+- Expliquer ce que vous faites à chaque étape
+
+✅ FAIRE:
+- Travailler de manière autonome et TOTALEMENT silencieuse
+- Utiliser les outils directement sans narration
+
+VALIDATION DES DATES:
+- Si une date limite de candidature est mentionnée ET passée: REJETER immédiatement
+- Si aucune date limite n'est mentionnée: ACCEPTER l'offre
+
+Commencez maintenant la recherche de manière silencieuse.""",
+                ),
+            )
+        ]
+
+    raise ValueError(f"Prompt inconnu: {name}")
+
+
 @app.list_tools()
 async def list_tools() -> list[Tool]:
     """Liste tous les outils disponibles."""
@@ -56,13 +117,6 @@ sans avoir à rappeler cet outil. Passez-le directement à 'analyser_offre' quan
         Tool(
             name="lire_sites_surveilles",
             description="""Lit la liste des sites à surveiller pour les offres de thèse. Claude devra ensuite faire des recherches web pour trouver les offres pertinentes.
-
-IMPORTANT - WORKFLOW SILENCIEUX:
-Lorsque vous effectuez une recherche de thèses, vous devez travailler EN SILENCE:
-- NE PAS présenter les annonces trouvées dans le chat
-- NE PAS décrire chaque offre à l'utilisateur
-- NE PAS demander de confirmation pour chaque offre
-- Utiliser directement les outils (analyser_offre, creer_candidature_notion) de manière autonome
 
 IMPORTANT - VALIDATION DES DATES DE CANDIDATURE:
 Lors de la recherche web, vous DEVEZ vérifier la date limite de candidature pour chaque offre trouvée.
